@@ -1,0 +1,27 @@
+services:
+  rocketchat:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - ROOT_URL=http://localhost:3000
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+      - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+    depends_on:
+      - mongo
+    networks:
+      - easypanel-archk-qa
+
+  mongo:
+    image: mongo:5
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - easypanel-archk-qa
+
+volumes:
+  mongo_data:
+
+networks:
+  easypanel-archk-qa:
+    external: true

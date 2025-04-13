@@ -1,21 +1,25 @@
+version: "3.8"
+
 services:
   rocketchat:
     image: registry.rocket.chat/rocketchat/rocket.chat:6.4.2
-    container_name: rocketchat
-    platform: linux/amd64  # Forzamos la plataforma para que funcione en ARM64
-    restart: always
+    platform: linux/amd64
+    restart: unless-stopped
     environment:
+      - PORT=3001
+      - ROOT_URL=https://archk-qa-roocket-app-1.ql357b.easypanel.host
       - MONGO_URL=mongodb://mongo:27017/rocketchat
-      - ROOT_URL=${ROOT_URL}
-      - PORT=3000
+      - MONGO_OPLOG_URL=mongodb://mongo:27017/local
+      - DEPLOY_METHOD=docker
+      - DEPLOY_PLATFORM=easyPanel
     depends_on:
       - mongo
     ports:
-      - "3000:3000"
+      - "3001:3000" # Evitamos conflicto usando 3001 en el host
 
   mongo:
-    image: mongo:5
-    restart: always
+    image: mongo:5.0
+    restart: unless-stopped
     volumes:
       - mongo_data:/data/db
 

@@ -1,16 +1,17 @@
 services:
   rocketchat:
-    image: steve2418/rocket.chat:arm64
+    image: registry.rocket.chat/rocketchat/rocket.chat:6.4.2
     container_name: rocketchat
+    platform: linux/amd64  # Forzamos la plataforma para que funcione en ARM64
     restart: always
     environment:
       - MONGO_URL=mongodb://mongo:27017/rocketchat
-      - ROOT_URL=https://archk-qa-roocket-app-1.ql357b.easypanel.host/
+      - ROOT_URL=${ROOT_URL}
       - PORT=3000
     depends_on:
       - mongo
-    expose:
-      - "3000"
+    ports:
+      - "3000:3000"
 
   mongo:
     image: mongo:5

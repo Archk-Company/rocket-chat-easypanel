@@ -1,7 +1,6 @@
 services:
   rocketchat:
-    image: registry.rocket.chat/rocketchat/rocket.chat:6.4.2
-    platform: linux/arm64
+    image: steve2418/rocket.chat:arm64
     container_name: rocketchat
     restart: always
     environment:

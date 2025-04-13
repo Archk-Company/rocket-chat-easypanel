@@ -1,26 +1,13 @@
-version: "3.9"
-
-services:
-  mongo:
-    image: mongo:5.0
-    restart: always
-    container_name: rocketchat-mongo
-    volumes:
-      - mongo_data:/data/db
-    command: mongod --bind_ip_all
-
-  rocketchat:
-    image: registry.rocket.chat/rocketchat/rocket.chat:6.1.0
-    restart: always
-    container_name: rocketchat
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/rocketchat
-      - ROOT_URL=https://archk-qa-roocket-app-1.ql357b.easypanel.host/
-      - PORT=3000
-    depends_on:
-      - mongo
-    expose:
-      - "3000"
-
-volumes:
-  mongo_data:
+rocketchat:
+  image: registry.rocket.chat/rocketchat/rocket.chat:6.4.2
+  platform: linux/arm64
+  container_name: rocketchat
+  restart: always
+  environment:
+    - MONGO_URL=mongodb://mongo:27017/rocketchat
+    - ROOT_URL=https://archk-qa-roocket-app-1.ql357b.easypanel.host/
+    - PORT=3000
+  depends_on:
+    - mongo
+  expose:
+    - "3000"

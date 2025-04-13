@@ -1,28 +1,26 @@
-x-app-env: &app-env
-  environment:
-    - ROOT_URL=${ROOT_URL:-https://archk-qa-roocket-app-1.ql357b.easypanel.host}
-    - PORT=${PORT:-3000}
-    - MONGO_URL=${MONGO_URL:-mongodb://rocketchat:password@mongo:27017/rocketchat?authSource=admin}
-    - MONGO_OPLOG_URL=${MONGO_OPLOG_URL:-mongodb://rocketchat:password@mongo:27017/local?authSource=admin}
+version: "3.9"
 
 services:
-  rocketchat:
-    <<: *app-env
-    image: registry.rocket.chat/rocketchat/rocket.chat:6.1.0
-    restart: unless-stopped
-    depends_on:
-      - mongo
-    ports:
-      - "80:3000"  # Cambiado para evitar conflictos y servir en puerto 80
-
   mongo:
-    image: mongo:5
-    restart: unless-stopped
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=rocketchat
-      - MONGO_INITDB_ROOT_PASSWORD=password
+    image: mongo:5.0
+    restart: always
+    container_name: rocketchat-mongo
     volumes:
       - mongo_data:/data/db
+    command: mongod --bind_ip_all
+
+  rocketchat:
+    image: registry.rocket.chat/rocketchat/rocket.chat:6.1.0
+    restart: always
+    container_name: rocketchat
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/rocketchat
+      - ROOT_URL=https://archk-qa-roocket-app-1.ql357b.easypanel.host/
+      - PORT=3000
+    depends_on:
+      - mongo
+    expose:
+      - "3000"
 
 volumes:
   mongo_data:
